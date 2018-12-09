@@ -2,6 +2,17 @@
   text-align: center;
 }
 
+.directionTable{
+  border-style: solid double;
+  margin: 10px;
+}
+
+.box{
+  margin: 5px;
+  padding: 5px;
+  box-shadow: 2px 8px 12px black;
+}
+
 button{
   background-color: white; 
   color: black; 
