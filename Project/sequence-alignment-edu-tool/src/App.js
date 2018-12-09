@@ -498,7 +498,7 @@ static getDerivedStateFromProps(props, state){
 
   handleTable = (val,x,y)=>{
     var new_table = this.state.dp_table
-    new_table[x][y] = val
+    new_table[x][y] =parseInt(val)
     this.setState({
       dp_table:new_table
     })
@@ -506,6 +506,24 @@ static getDerivedStateFromProps(props, state){
 
   check = () =>{
     const{Alignment,dp_table_global,dp_table_local,dp_table_fitting} = this.props
+    const{dp_table} = this.state
+    var i,j
+    if(Alignment === "Global Alignment"){
+      for(j = 0; j<dp_table.length; j ++ ){
+        for(i=0; i<dp_table[j].length; i++){
+          if(i ===0 && j ===0 && dp_table[j][i] !== 0){
+            alert("Your iitialization is not correct,click the question mark for more info!")
+            return false
+          }
+          if(i !==0 || j !==0 && dp_table[j][i] !== null){
+            alert("Your iitialization is not correct,click the question mark for more info!")
+            return false
+          }
+        }
+      }
+      alert("Awesome! You got it correct! For Global Alignment there's only one base case: S[0][0] == 0")
+      return true
+    }
   }
 
  
