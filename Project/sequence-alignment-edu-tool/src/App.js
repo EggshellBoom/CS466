@@ -195,6 +195,17 @@ class App extends Component {
     })
   }
 
+  submit_initialization = () =>{
+    const{allowed_step} = this.state
+    var next_alloed_step = allowed_step
+    if(allowed_step < 3){
+      next_alloed_step = 3
+    }
+    this.setState({
+      allowed_step:next_alloed_step
+    })
+  }
+
   render() {
     const{Alignment,sequence1,sequence2,score_matrix,current_step,allowed_step,dp_table,dp_table_fitting,dp_table_global,dp_table_local} = this.state
     return (
@@ -215,7 +226,7 @@ class App extends Component {
         dp_table = {dp_table} submit_recurrence = {this.submit_recurrence} 
         sequence1 = {sequence1} sequence2 = {sequence2} 
         dp_table_global = {dp_table_global} dp_table_fitting = {dp_table_fitting} dp_table_local = {dp_table_local}
-        score_matrix = {score_matrix} />        
+        score_matrix = {score_matrix} submit_initialization = {this.submit_initialization} />        
         </section>
   
         <button disabled = {current_step < allowed_step ? false:true} onClick = {this.handleNext}>Next</button>
@@ -498,7 +509,7 @@ static getDerivedStateFromProps(props, state){
 
   handleTable = (val,x,y)=>{
     var new_table = this.state.dp_table
-    new_table[x][y] =parseInt(val)
+    new_table[x][y] = parseInt(val)
     this.setState({
       dp_table:new_table
     })
@@ -511,17 +522,39 @@ static getDerivedStateFromProps(props, state){
     if(Alignment === "Global Alignment"){
       for(j = 0; j<dp_table.length; j ++ ){
         for(i=0; i<dp_table[j].length; i++){
-          if(i ===0 && j ===0 && dp_table[j][i] !== 0){
-            alert("Your iitialization is not correct,click the question mark for more info!")
-            return false
-          }
-          if(i !==0 || j !==0 && dp_table[j][i] !== null){
-            alert("Your iitialization is not correct,click the question mark for more info!")
+          if(dp_table[j][i] !== null && dp_table[j][i] !== dp_table_global[j][i]){
+            alert("Your initialization is not correct,click the question mark for more info!")
             return false
           }
         }
       }
-      alert("Awesome! You got it correct! For Global Alignment there's only one base case: S[0][0] == 0")
+      alert("Awesome! You got it correct! Now you can click Next button to proceed")
+      return true
+    }
+
+    if(Alignment === "Fitting Alignment"){
+      for(j = 0; j<dp_table.length; j ++ ){
+        for(i=0; i<dp_table[j].length; i++){
+          if(dp_table[j][i] !== null && dp_table[j][i] !== dp_table_fitting[j][i]){
+            alert("Your initialization is not correct,click the question mark for more info!")
+            return false
+          }
+        }
+      }
+      alert("Awesome! You got it correct! Now you can click Next button to proceed")
+      return true
+    }
+
+    if(Alignment === "Local Alignment"){
+      for(j = 0; j<dp_table.length; j ++ ){
+        for(i=0; i<dp_table[j].length; i++){
+          if(dp_table[j][i] !== null && dp_table[j][i] !== dp_table_local[j][i]){
+            alert("Your initialization is not correct,click the question mark for more info!")
+            return false
+          }
+        }
+      }
+      alert("Awesome! You got it correct! Now you can click Next button to proceed")
       return true
     }
   }
@@ -546,7 +579,7 @@ static getDerivedStateFromProps(props, state){
         <td><input type="number"
         value = {dp_table[x][y]} 
         onChange={(e) => { this.handleTable(e.target.value,x,y)}}
-        min="-99" max="99" disabled = {x === 0 || y === 0 ? false:true} /></td>
+        min="-99" max="99" disabled = {x === 0 || y === 0 ? false:true} required/></td>
         )}
 
       </tr>
@@ -558,13 +591,14 @@ static getDerivedStateFromProps(props, state){
       <div className="App">
         <h3>Step2: Initialize the DP table for</h3>
         <h2> {Alignment}</h2>
-        <h5>Find the base case from the recurrence and correspond that value to the table.</h5>
-        <h5>(Not all blanks needs to be filled)</h5>
+        <h5>Consult the base case and the eadge cases from the recurrence and correspond the values to the table.</h5>
         <div className = "divider_1">
         <Recurrence Alignment = {Alignment}/>
         <form onSubmit = {(event) => { 
-          console.log(event.target.value); event.preventDefault(); 
-          this.check()
+          console.log(event.target.value);
+          event.preventDefault(); 
+          if(this.check())
+            this.props.submit_initialization()
            }}>
         <table>
           <tr>
