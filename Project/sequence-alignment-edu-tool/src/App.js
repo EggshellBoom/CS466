@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import glocal_rec from './Global.png';
-import fitting_rec from './Fitting.png';
-import local_rec from './Local.png';
 import InputSequence from './InputSequence.js'
 import SelectRecurence from './SelectRecurence.js'
 import InitializeTable from './InitializeTable.js'
 import SelectDirection from './SelectDirection.js'
 import FinishTable from './FinishTable.js'
+import BackTrace from './BackTrace.js'
 import './App.css';
 
 class App extends Component {
@@ -20,6 +18,9 @@ class App extends Component {
       dp_table_global:[],
       dp_table_fitting:[],
       dp_table_local:[],
+      backtrace_fitting:[],
+      backtrace_global:[],
+      backtrace_local:[],
       DownRight:[],
       RightDown:[],
       UpLeft:[],
@@ -30,7 +31,7 @@ class App extends Component {
       LeftDown:[],
       score_matrix : null,
       current_step:0,
-      allowed_step:50,
+      allowed_step:0,
     };
 }
   MapDirections = () =>{
@@ -101,41 +102,66 @@ class App extends Component {
 
 
   GlobalAlignment = (dp_table,score_matrix,sequence1,sequence2) =>{
+    // console.log()
     // deep copy
     let global_dp_table = JSON.parse(JSON.stringify(dp_table));
-    var i,j
+    var i,j;
+    var backtrace = JSON.parse(JSON.stringify(dp_table));
     for(j = 0; j<global_dp_table.length; j ++ ){
       for(i=0; i<global_dp_table[j].length; i++){
         if(i === 0 && j === 0){
           global_dp_table[j][i] = 0
+          backtrace[j][i] = [[0]]
         }
         //deletion
         if(i > 0){
-          if(global_dp_table[j][i] == null)
+          if(global_dp_table[j][i] == null){
             global_dp_table[j][i] =  global_dp_table[j][i-1] + score_matrix["gap"]
-          else if(global_dp_table[j][i] < global_dp_table[j][i-1] + score_matrix["gap"])
+            backtrace[j][i] = [[j,i-1]]
+          }
+          else if(global_dp_table[j][i] < global_dp_table[j][i-1] + score_matrix["gap"]){
             global_dp_table[j][i] =  global_dp_table[j][i-1] + score_matrix["gap"]
+            backtrace[j][i] = [[j,i-1]]
+          }
+          else if(global_dp_table[j][i] === global_dp_table[j][i-1] + score_matrix["gap"]){
+            backtrace[j][i].push([j,i-1])
+
+          }
           
         } 
 
         if(j >0){
-          if(global_dp_table[j][i] == null)
+          if(global_dp_table[j][i] == null){
             global_dp_table[j][i] =  global_dp_table[j-1][i] + score_matrix["gap"]
-          else if (global_dp_table[j][i] < global_dp_table[j-1][i] + score_matrix["gap"])
+            backtrace[j][i] = [[j-1,i]]
+          }
+          else if (global_dp_table[j][i] < global_dp_table[j-1][i] + score_matrix["gap"]){
             global_dp_table[j][i] =  global_dp_table[j-1][i] + score_matrix["gap"]
+            backtrace[j][i] = [[j-1,i]]          
+          }
+          else if(global_dp_table[j][i]  === global_dp_table[j-1][i] + score_matrix["gap"]){
+            backtrace[j][i].push([j-1,i])
+          }
           
         }
 
         if(i>0 && j>0){
-          if(global_dp_table[j][i] < global_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]])
-            
+          if(global_dp_table[j][i] < global_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]]){            
             global_dp_table[j][i] =  global_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]]
+            backtrace[j][i] = [[j-1,i-1]]          
+          }
+          else if(global_dp_table[j][i] === global_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]]){
+            backtrace[j][i].push([j-1,i-1])
+          }
         }
       }
     }
-    console.log(global_dp_table)
+    console.log(backtrace)
+
     this.setState({
-      dp_table_global:global_dp_table
+      dp_table_global:global_dp_table,
+      backtrace_global:backtrace
+
     })
   }
 
@@ -143,38 +169,65 @@ class App extends Component {
     // deep copy
     let fitting_dp_table = JSON.parse(JSON.stringify(dp_table));
     var i,j
+    var backtrace = JSON.parse(JSON.stringify(dp_table));
     for(j = 0; j<fitting_dp_table.length; j ++ ){
       for(i=0; i<fitting_dp_table[j].length; i++){
         if(j === 0){
           fitting_dp_table[j][i] = 0
+          backtrace[j][i] = [[0]]
         }
         //deletion
         if(i>0 && j>0){
-          if(fitting_dp_table[j][i] == null)
+          if(fitting_dp_table[j][i] == null){
             fitting_dp_table[j][i] =  fitting_dp_table[j][i-1] + score_matrix["gap"]
-          else if(fitting_dp_table[j][i] < fitting_dp_table[j][i-1] + score_matrix["gap"])
+            backtrace[j][i] = [[j,i-1]]
+          }
+          else if(fitting_dp_table[j][i] < fitting_dp_table[j][i-1] + score_matrix["gap"]){
             fitting_dp_table[j][i] =  fitting_dp_table[j][i-1] + score_matrix["gap"]
+            backtrace[j][i] = [[j,i-1]]            
+          }
+          else if(fitting_dp_table[j][i] === fitting_dp_table[j][i-1] + score_matrix["gap"]){
+            backtrace[j][i].push([j,i-1])            
+          }
           
         } 
 
         if(j>0){
-          if(fitting_dp_table[j][i] == null)
+          if(fitting_dp_table[j][i] == null){
             fitting_dp_table[j][i] =  fitting_dp_table[j-1][i] + score_matrix["gap"]
-          else if (fitting_dp_table[j][i] < fitting_dp_table[j-1][i] + score_matrix["gap"])
+            backtrace[j][i] = [[j-1,i]]
+          }
+          else if (fitting_dp_table[j][i] < fitting_dp_table[j-1][i] + score_matrix["gap"]){
             fitting_dp_table[j][i] =  fitting_dp_table[j-1][i] + score_matrix["gap"]
+            backtrace[j][i] = [[j-1,i]]
+          }
+          else if(fitting_dp_table[j][i] === fitting_dp_table[j-1][i] + score_matrix["gap"]){
+            backtrace[j][i].push([j-1,i])
+          }
           
         }
 
         if(i>0 && j>0){
-          if(fitting_dp_table[j][i] < fitting_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]])
+          if(fitting_dp_table[j][i] < fitting_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]]){
             
             fitting_dp_table[j][i] =  fitting_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]]
-        }
+            backtrace[j][i] = [[j-1,i-1]]
+            
+          }
+          else if(fitting_dp_table[j][i] === fitting_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]]){
+            backtrace[j][i].push([j-1,i-1])
+
+          }
+        
+         }
+
       }
     }
-    console.log(fitting_dp_table)
+    console.log(backtrace)
     this.setState({
-      dp_table_fitting:fitting_dp_table
+      dp_table_fitting:fitting_dp_table,
+      backtrace_fitting:backtrace
+
     })
   }
 
@@ -182,37 +235,60 @@ class App extends Component {
     // deep copy
     let local_dp_table = JSON.parse(JSON.stringify(dp_table));
     var i,j
+    var backtrace = JSON.parse(JSON.stringify(dp_table));
     for(j = 0; j<local_dp_table.length; j ++ ){
       for(i=0; i<local_dp_table[j].length; i++){
         local_dp_table[j][i] = 0
-        
+        backtrace[j][i] = [[0]]
         //deletion
         if(i > 0){
-          if(local_dp_table[j][i] == null)
+          if(local_dp_table[j][i] == null){
             local_dp_table[j][i] =  local_dp_table[j][i-1] + score_matrix["gap"]
-          else if(local_dp_table[j][i] < local_dp_table[j][i-1] + score_matrix["gap"])
+            backtrace[j][i] = [[j,i-1]]
+          }
+          else if(local_dp_table[j][i] < local_dp_table[j][i-1] + score_matrix["gap"]){
             local_dp_table[j][i] =  local_dp_table[j][i-1] + score_matrix["gap"]
-          
+            backtrace[j][i] = [[j,i-1]]
+          }
+          else if(local_dp_table[j][i] === local_dp_table[j][i-1] + score_matrix["gap"]){
+            backtrace[j][i].push([j,i-1])
+          }
         } 
 
         if(i>0 && j>0){
-          if(local_dp_table[j][i] == null)
+          if(local_dp_table[j][i] == null){
             local_dp_table[j][i] =  local_dp_table[j-1][i] + score_matrix["gap"]
-          else if (local_dp_table[j][i] < local_dp_table[j-1][i] + score_matrix["gap"])
+            backtrace[j][i] = [[j-1,i]]
+          }
+          else if (local_dp_table[j][i] < local_dp_table[j-1][i] + score_matrix["gap"]){
             local_dp_table[j][i] =  local_dp_table[j-1][i] + score_matrix["gap"]
+            backtrace[j][i] = [[j-1,i]]
+          }
+          else if(local_dp_table[j][i] === local_dp_table[j-1][i] + score_matrix["gap"]){
+            backtrace[j][i].push([j-1,i])
+
+          }
           
         }
 
         if(i>0 && j>0){
-          if(local_dp_table[j][i] < local_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]])
+          if(local_dp_table[j][i] < local_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]]){
             
             local_dp_table[j][i] =  local_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]]
+            backtrace[j][i] = [[j-1,i-1]]
+            
+          }
+          else if(local_dp_table[j][i] < local_dp_table[j-1][i-1] + score_matrix[sequence1[i+1]+sequence2[j]]){
+            backtrace[j][i].push([j-1,i-1])
+
+          }
         }
       }
     }
-    console.log(local_dp_table)
+    console.log(backtrace)
     this.setState({
-      dp_table_local:local_dp_table
+      dp_table_local:local_dp_table,
+      backtrace_local:backtrace
     })
   }
 
@@ -242,7 +318,6 @@ class App extends Component {
     const{allowed_step} = this.state
     var next_alloed_step = allowed_step
     var dp_table = Array(sequence2.length).fill(null).map(()=>Array(sequence1.length-1).fill(null));
-    console.log(dp_table)
     if(allowed_step < 1){
       next_alloed_step = 1
     }
@@ -305,9 +380,22 @@ class App extends Component {
       allowed_step:next_alloed_step
     })
   }
+
+  submit_backtrace = () =>{
+    const{allowed_step} = this.state
+    var next_alloed_step = allowed_step
+    if(allowed_step < 6){
+      next_alloed_step = 6
+    }
+    this.setState({
+      allowed_step:next_alloed_step
+    })
+  }
   render() {
     const{Alignment,sequence1,sequence2,score_matrix,current_step,allowed_step,
-      dp_table,dp_table_fitting,dp_table_global,dp_table_local,DownRight,RightDown,UpLeft,LeftUp,RightUp,UpRight,DownLeft,LeftDown
+      dp_table,dp_table_fitting,dp_table_global,dp_table_local,DownRight,
+      RightDown,UpLeft,LeftUp,RightUp,UpRight,DownLeft,LeftDown,
+      backtrace_fitting,backtrace_global,backtrace_local
     } = this.state
     return (
       <div className="App">
@@ -352,6 +440,21 @@ class App extends Component {
         dp_table_global = {dp_table_global} dp_table_fitting = {dp_table_fitting} dp_table_local = {dp_table_local}
         score_matrix = {score_matrix} submit_finish = {this.submit_finish}  />        
         </section>
+
+
+        
+        <section className={ current_step === 5 ? '' : 'hidden'} >
+        <BackTrace Alignment = {Alignment} 
+        dp_table = {dp_table} submit_recurrence = {this.submit_recurrence} 
+        sequence1 = {sequence1} sequence2 = {sequence2} 
+        dp_table_global = {dp_table_global} dp_table_fitting = {dp_table_fitting} dp_table_local = {dp_table_local}
+        score_matrix = {score_matrix} 
+        backtrace_fitting = {backtrace_fitting}
+        backtrace_global = {backtrace_global}
+        backtrace_local = {backtrace_local}
+        submit_backtrace = {this.submit_backtrace}  />        
+        </section>
+
 
         
   

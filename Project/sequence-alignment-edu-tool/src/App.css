@@ -13,6 +13,16 @@
   box-shadow: 2px 8px 12px black;
 }
 
+.green{
+  color: green;
+  border-style: double;
+}
+
+.yellow{
+  color: yellow;
+  border-style: dotted;
+}
+
 button{
   background-color: white; 
   color: black; 
@@ -70,7 +80,7 @@ button[disabled]{
   border-radius: 80px;
 }
 
-.green{
+.green_smile{
   color: green;
 }
 

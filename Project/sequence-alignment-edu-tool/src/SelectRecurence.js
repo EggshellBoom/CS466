@@ -61,19 +61,19 @@ class SelectRecurence extends Component {
           <div className = "select_window" backgroud>
           <button onClick = {() => {this.handleSelect("Global Alignment")}}> Select </button>
           <img src={glocal_rec} width="500" height="120" />
-          <h1 className = {this.state.correct_1 ? "green" : ""} >: )</h1>
+          <h1 className = {this.state.correct_1 ? "green_smile" : ""} >: )</h1>
           </div>
   
           <div className = "select_window">
           <button onClick = {() => {this.handleSelect("Fitting Alignment")}}> Select </button>
           <img src={fitting_rec} width="500" height="150" />
-          <h1 className = {this.state.correct_2 ? "green" : ""} >: )</h1>
+          <h1 className = {this.state.correct_2 ? "green_smile" : ""} >: )</h1>
           </div>
   
           <div className = "select_window">
           <button onClick = {() => {this.handleSelect("Local Alignment")}}> Select </button>
           <img src={local_rec} width="500" height="150" />
-          <h1 className = {this.state.correct_3 ? "green" : ""} >: )</h1>
+          <h1 className = {this.state.correct_3 ? "green_smile" : ""} >: )</h1>
           </div>
           </div>
       

@@ -77,7 +77,7 @@ class InitializeTable extends Component {
   
    
     render() {
-      const{Alignment,sequence1,sequence2} = this.props
+      const{Alignment,sequence1,sequence2,score_matrix} = this.props
       const{dp_table} = this.state
   
       const title_list =sequence1.flat()

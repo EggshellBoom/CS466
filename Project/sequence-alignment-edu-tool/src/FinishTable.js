@@ -39,8 +39,8 @@ class FinishTable extends Component {
       if(Alignment === "Global Alignment"){
         for(j = 0; j<dp_table.length; j ++ ){
           for(i=0; i<dp_table[j].length; i++){
-            if(dp_table[j][i] !== null && dp_table[j][i] !== dp_table_global[j][i]){
-              alert("Your initialization is not correct,click the question mark for more info!")
+            if(dp_table[j][i] !== dp_table_global[j][i]){
+              alert("Your table is not correct,click the question mark for more info!")
               return false
             }
           }
@@ -52,8 +52,8 @@ class FinishTable extends Component {
       if(Alignment === "Fitting Alignment"){
         for(j = 0; j<dp_table.length; j ++ ){
           for(i=0; i<dp_table[j].length; i++){
-            if(dp_table[j][i] !== null && dp_table[j][i] !== dp_table_fitting[j][i]){
-              alert("Your initialization is not correct,click the question mark for more info!")
+            if(dp_table[j][i] !== dp_table_fitting[j][i]){
+              alert("Your table is not correct,click the question mark for more info!")
               return false
             }
           }
@@ -65,8 +65,8 @@ class FinishTable extends Component {
       if(Alignment === "Local Alignment"){
         for(j = 0; j<dp_table.length; j ++ ){
           for(i=0; i<dp_table[j].length; i++){
-            if(dp_table[j][i] !== null && dp_table[j][i] !== dp_table_local[j][i]){
-              alert("Your initialization is not correct,click the question mark for more info!")
+            if(dp_table[j][i] !== dp_table_local[j][i]){
+              alert("Your table is not correct,click the question mark for more info!")
               return false
             }
           }
@@ -96,7 +96,7 @@ class FinishTable extends Component {
           <td><input type="number"
           value = {dp_table[x][y]} 
           onChange={(e) => { this.handleTable(e.target.value,x,y)}}
-          min="-99" max="99"  required/></td>
+          min="-99" max="99" readonly = {x === 0 || y === 0 ? "readonly":false} required/></td>
           )}
   
         </tr>
@@ -106,16 +106,16 @@ class FinishTable extends Component {
   
       return (
         <div className="App">
-          <h3>Step2: Initialize the DP table for</h3>
+          <h3>Step4: Complete the DP table for</h3>
           <h2> {Alignment}</h2>
-          <h5>Consult the base case and the eadge cases from the recurrence and correspond the values to the table.</h5>
+          <h5>Consult the recurrence and the direction you just chose,finish the table.</h5>
           <div className = "divider_1">
           <Recurrence Alignment = {Alignment}/>
           <form onSubmit = {(event) => { 
             console.log(event.target.value);
             event.preventDefault(); 
             if(this.check())
-              this.props.submit_initialization()
+              this.props.submit_finish()
              }}>
           <table>
             <tr>
