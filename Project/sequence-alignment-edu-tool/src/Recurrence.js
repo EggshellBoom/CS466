@@ -8,9 +8,9 @@ const Recurrence = ({Alignment}) =>{
     if(Alignment === "Global Alignment")
       return (<img className = "recurrence" src={glocal_rec} width="500" height="120" />)
     else if(Alignment === "Fitting Alignment")
-      return (<img className = "recurrence" src={fitting_rec} width="500" height="120" />)
+      return (<img className = "recurrence" src={fitting_rec} width="500" height="150" />)
     else if(Alignment === "Local Alignment")
-      return (<img className = "recurrence" src={local_rec} width="500" height="120" />)
+      return (<img className = "recurrence" src={local_rec} width="500" height="150" />)
     else
       return(<div/>)
   }

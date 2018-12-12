@@ -2,19 +2,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Recurrence from './Recurrence.js'
-import { TimelineMax } from "gsap/all";
-
-
-class BacktraceAnim extends Component {
-    
-
-    render(){
-      return( 
-        <div className="box">
-        <div className = {this.props.clickable ? "yellow":""}> <div className = {this.props.clicked ? "green":""}>{this.props.val} </div> </div>
-        </div>);
-    }
-  }
+import BacktraceAnim from "./BacktraceAnim.js"
 
 
 class BackTrace extends Component {
@@ -201,7 +189,7 @@ class BackTrace extends Component {
     
     handleSubmit = () =>{
         if(this.check())
-            this.props.submit_backtrace()
+            this.props.submit_backtrace(this.state.BackTrace,this.state.clicked,this.state.first_clicked,this.state.last_clicked)
     }
   
     
@@ -233,12 +221,11 @@ class BackTrace extends Component {
   
       return (
         <div className="App">
-          <h3>Step5: Perdorm BackTrace on the dp table</h3>
+          <h3>Step5: Perform BackTrace on the dp table</h3>
           <h2> {Alignment}</h2>
           <h5>First click the final score of the alignment, then click the yellow area to backtrace step by step</h5>
           <div className = "divider_1">
           <Recurrence Alignment = {Alignment}/>
-         <div className = "divider">
           <table>
             <tr>
             {subtable_title}
@@ -246,7 +233,6 @@ class BackTrace extends Component {
             {table}
           </table>
            
-          </div>
           <button onClick = {this.handleRestart}>Restart</button>
           <button onClick = {this.handleSubmit}>Submit</button>
           </div>

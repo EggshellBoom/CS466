@@ -5,6 +5,7 @@ import InitializeTable from './InitializeTable.js'
 import SelectDirection from './SelectDirection.js'
 import FinishTable from './FinishTable.js'
 import BackTrace from './BackTrace.js'
+import FinalAlignment from './FinalAlignment.js'
 import './App.css';
 
 class App extends Component {
@@ -29,11 +30,59 @@ class App extends Component {
       UpRight:[],
       DownLeft:[],
       LeftDown:[],
+      BackTrace:[],
+      clicked:[],
+      first_clicked:[],
+      last_clicked:[],
+      Alignment1:[],
+      Alignment2:[],
       score_matrix : null,
       current_step:0,
       allowed_step:0,
     };
 }
+
+
+  GetAlignment = (first_clicked,last_clicked,clicked) =>{
+    var Alignment1 = []
+    var Alignment2 = []
+    var current_click = []
+    const{sequence1,sequence2} = this.state
+    current_click = last_clicked
+    while(current_click[0] !== first_clicked[0] || current_click[1] !== first_clicked[1]){
+      console.log(current_click)
+      if(clicked[current_click[0]+1][current_click[1]+1]){
+        //   match/mismatch
+        Alignment1.push(sequence1[current_click[1]+2])
+        Alignment2.push(sequence2[current_click[0]+1])
+        current_click = [current_click[0]+1,current_click[1]+1]
+      }
+
+      else if(clicked[current_click[0]][current_click[1]+1]){
+        //   deletion
+        Alignment1.push(sequence1[current_click[1]+2])
+        Alignment2.push("---")
+        current_click = [current_click[0],current_click[1]+1]
+      }
+
+      else if(clicked[current_click[0]+1][current_click[1]]){
+        //   insertion
+        Alignment1.push("---")
+        Alignment2.push(sequence2[current_click[0]+1])
+        current_click = [current_click[0]+1,current_click[1]]
+      }
+
+      console.log("Alignment1", Alignment1)
+      console.log("Alignment2", Alignment2)
+
+
+    }
+
+    this.setState({
+      Alignment1:Alignment1,
+      Alignment2:Alignment2
+    })
+  }
   MapDirections = () =>{
     const dp_table = Array(5).fill(null).map(()=>Array(4).fill(null));
     let DownRight = JSON.parse(JSON.stringify(dp_table));
@@ -116,14 +165,14 @@ class App extends Component {
         //deletion
         if(i > 0){
           if(global_dp_table[j][i] == null){
-            global_dp_table[j][i] =  global_dp_table[j][i-1] + score_matrix["gap"]
+            global_dp_table[j][i] =  global_dp_table[j][i-1] + score_matrix["GAP"]
             backtrace[j][i] = [[j,i-1]]
           }
-          else if(global_dp_table[j][i] < global_dp_table[j][i-1] + score_matrix["gap"]){
-            global_dp_table[j][i] =  global_dp_table[j][i-1] + score_matrix["gap"]
+          else if(global_dp_table[j][i] < global_dp_table[j][i-1] + score_matrix["GAP"]){
+            global_dp_table[j][i] =  global_dp_table[j][i-1] + score_matrix["GAP"]
             backtrace[j][i] = [[j,i-1]]
           }
-          else if(global_dp_table[j][i] === global_dp_table[j][i-1] + score_matrix["gap"]){
+          else if(global_dp_table[j][i] === global_dp_table[j][i-1] + score_matrix["GAP"]){
             backtrace[j][i].push([j,i-1])
 
           }
@@ -132,14 +181,14 @@ class App extends Component {
 
         if(j >0){
           if(global_dp_table[j][i] == null){
-            global_dp_table[j][i] =  global_dp_table[j-1][i] + score_matrix["gap"]
+            global_dp_table[j][i] =  global_dp_table[j-1][i] + score_matrix["GAP"]
             backtrace[j][i] = [[j-1,i]]
           }
-          else if (global_dp_table[j][i] < global_dp_table[j-1][i] + score_matrix["gap"]){
-            global_dp_table[j][i] =  global_dp_table[j-1][i] + score_matrix["gap"]
+          else if (global_dp_table[j][i] < global_dp_table[j-1][i] + score_matrix["GAP"]){
+            global_dp_table[j][i] =  global_dp_table[j-1][i] + score_matrix["GAP"]
             backtrace[j][i] = [[j-1,i]]          
           }
-          else if(global_dp_table[j][i]  === global_dp_table[j-1][i] + score_matrix["gap"]){
+          else if(global_dp_table[j][i]  === global_dp_table[j-1][i] + score_matrix["GAP"]){
             backtrace[j][i].push([j-1,i])
           }
           
@@ -179,14 +228,14 @@ class App extends Component {
         //deletion
         if(i>0 && j>0){
           if(fitting_dp_table[j][i] == null){
-            fitting_dp_table[j][i] =  fitting_dp_table[j][i-1] + score_matrix["gap"]
+            fitting_dp_table[j][i] =  fitting_dp_table[j][i-1] + score_matrix["GAP"]
             backtrace[j][i] = [[j,i-1]]
           }
-          else if(fitting_dp_table[j][i] < fitting_dp_table[j][i-1] + score_matrix["gap"]){
-            fitting_dp_table[j][i] =  fitting_dp_table[j][i-1] + score_matrix["gap"]
+          else if(fitting_dp_table[j][i] < fitting_dp_table[j][i-1] + score_matrix["GAP"]){
+            fitting_dp_table[j][i] =  fitting_dp_table[j][i-1] + score_matrix["GAP"]
             backtrace[j][i] = [[j,i-1]]            
           }
-          else if(fitting_dp_table[j][i] === fitting_dp_table[j][i-1] + score_matrix["gap"]){
+          else if(fitting_dp_table[j][i] === fitting_dp_table[j][i-1] + score_matrix["GAP"]){
             backtrace[j][i].push([j,i-1])            
           }
           
@@ -194,14 +243,14 @@ class App extends Component {
 
         if(j>0){
           if(fitting_dp_table[j][i] == null){
-            fitting_dp_table[j][i] =  fitting_dp_table[j-1][i] + score_matrix["gap"]
+            fitting_dp_table[j][i] =  fitting_dp_table[j-1][i] + score_matrix["GAP"]
             backtrace[j][i] = [[j-1,i]]
           }
-          else if (fitting_dp_table[j][i] < fitting_dp_table[j-1][i] + score_matrix["gap"]){
-            fitting_dp_table[j][i] =  fitting_dp_table[j-1][i] + score_matrix["gap"]
+          else if (fitting_dp_table[j][i] < fitting_dp_table[j-1][i] + score_matrix["GAP"]){
+            fitting_dp_table[j][i] =  fitting_dp_table[j-1][i] + score_matrix["GAP"]
             backtrace[j][i] = [[j-1,i]]
           }
-          else if(fitting_dp_table[j][i] === fitting_dp_table[j-1][i] + score_matrix["gap"]){
+          else if(fitting_dp_table[j][i] === fitting_dp_table[j-1][i] + score_matrix["GAP"]){
             backtrace[j][i].push([j-1,i])
           }
           
@@ -243,28 +292,28 @@ class App extends Component {
         //deletion
         if(i > 0){
           if(local_dp_table[j][i] == null){
-            local_dp_table[j][i] =  local_dp_table[j][i-1] + score_matrix["gap"]
+            local_dp_table[j][i] =  local_dp_table[j][i-1] + score_matrix["GAP"]
             backtrace[j][i] = [[j,i-1]]
           }
-          else if(local_dp_table[j][i] < local_dp_table[j][i-1] + score_matrix["gap"]){
-            local_dp_table[j][i] =  local_dp_table[j][i-1] + score_matrix["gap"]
+          else if(local_dp_table[j][i] < local_dp_table[j][i-1] + score_matrix["GAP"]){
+            local_dp_table[j][i] =  local_dp_table[j][i-1] + score_matrix["GAP"]
             backtrace[j][i] = [[j,i-1]]
           }
-          else if(local_dp_table[j][i] === local_dp_table[j][i-1] + score_matrix["gap"]){
+          else if(local_dp_table[j][i] === local_dp_table[j][i-1] + score_matrix["GAP"]){
             backtrace[j][i].push([j,i-1])
           }
         } 
 
         if(i>0 && j>0){
           if(local_dp_table[j][i] == null){
-            local_dp_table[j][i] =  local_dp_table[j-1][i] + score_matrix["gap"]
+            local_dp_table[j][i] =  local_dp_table[j-1][i] + score_matrix["GAP"]
             backtrace[j][i] = [[j-1,i]]
           }
-          else if (local_dp_table[j][i] < local_dp_table[j-1][i] + score_matrix["gap"]){
-            local_dp_table[j][i] =  local_dp_table[j-1][i] + score_matrix["gap"]
+          else if (local_dp_table[j][i] < local_dp_table[j-1][i] + score_matrix["GAP"]){
+            local_dp_table[j][i] =  local_dp_table[j-1][i] + score_matrix["GAP"]
             backtrace[j][i] = [[j-1,i]]
           }
-          else if(local_dp_table[j][i] === local_dp_table[j-1][i] + score_matrix["gap"]){
+          else if(local_dp_table[j][i] === local_dp_table[j-1][i] + score_matrix["GAP"]){
             backtrace[j][i].push([j-1,i])
 
           }
@@ -381,21 +430,27 @@ class App extends Component {
     })
   }
 
-  submit_backtrace = () =>{
+  submit_backtrace = (BackTrace,clicked,first_clicked,last_clicked) =>{
     const{allowed_step} = this.state
     var next_alloed_step = allowed_step
     if(allowed_step < 6){
       next_alloed_step = 6
     }
     this.setState({
-      allowed_step:next_alloed_step
+      allowed_step:next_alloed_step,
+      BackTrace:BackTrace,
+      clicked:clicked,
+      first_clicked:first_clicked,
+      last_clicked:last_clicked
     })
+    this.GetAlignment(first_clicked,last_clicked,clicked)
   }
   render() {
     const{Alignment,sequence1,sequence2,score_matrix,current_step,allowed_step,
       dp_table,dp_table_fitting,dp_table_global,dp_table_local,DownRight,
       RightDown,UpLeft,LeftUp,RightUp,UpRight,DownLeft,LeftDown,
-      backtrace_fitting,backtrace_global,backtrace_local
+      backtrace_fitting,backtrace_global,backtrace_local,clicked,
+      first_clicked,last_clicked,Alignment1,Alignment2
     } = this.state
     return (
       <div className="App">
@@ -456,6 +511,23 @@ class App extends Component {
         </section>
 
 
+        <section className={ current_step === 6 ? '' : 'hidden'} >
+        <FinalAlignment Alignment = {Alignment} 
+        dp_table = {dp_table} submit_recurrence = {this.submit_recurrence} 
+        sequence1 = {sequence1} sequence2 = {sequence2} 
+        dp_table_global = {dp_table_global} dp_table_fitting = {dp_table_fitting} dp_table_local = {dp_table_local}
+        score_matrix = {score_matrix} 
+        backtrace_fitting = {backtrace_fitting}
+        backtrace_global = {backtrace_global}
+        backtrace_local = {backtrace_local}
+        submit_backtrace = {this.submit_backtrace}
+        first_clicked = {first_clicked}
+        last_clicked = {last_clicked}
+        clicked = {clicked}
+        ans_Alignment1 = {Alignment1}
+        ans_Alignment2 = {Alignment2}  />        
+        </section>
+      
         
   
         <button disabled = {current_step < allowed_step ? false:true} onClick = {this.handleNext}>Next</button>

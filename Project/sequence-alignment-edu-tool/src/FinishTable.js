@@ -79,8 +79,17 @@ class FinishTable extends Component {
    
     render() {
       const{Alignment,sequence1,sequence2} = this.props
+      const{dp_table_global,dp_table_local,dp_table_fitting} = this.props
       const{dp_table} = this.state
-  
+      var new_table
+
+      if(Alignment === "Global Alignment")
+        new_table = dp_table_global
+      if(Alignment === "Fitting Alignment")
+        new_table = dp_table_fitting
+      if(Alignment === "Local Alignment")
+        new_table = dp_table_local
+
       const title_list =sequence1.flat()
       const subtable_title = title_list.map((sq1)=>
         <th>{sq1}</th>
@@ -93,7 +102,7 @@ class FinishTable extends Component {
         <tr>
           <th>{sequence2[x]}</th>
           {row.map((cell,y)=>
-          <td><input type="number"
+          <td className = {dp_table[x][y] === new_table[x][y] ? "green":"" }><input type="number"
           value = {dp_table[x][y]} 
           onChange={(e) => { this.handleTable(e.target.value,x,y)}}
           min="-99" max="99" readonly = {x === 0 || y === 0 ? "readonly":false} required/></td>

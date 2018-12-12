@@ -107,7 +107,7 @@ class InitializeTable extends Component {
         <div className="App">
           <h3>Step2: Initialize the DP table for</h3>
           <h2> {Alignment}</h2>
-          <h5>Consult the base case and the eadge cases from the recurrence and correspond the values to the table.</h5>
+          <h5>Consult the base case and the edge cases from the recurrence and correspond the values to the table.</h5>
           <div className = "divider_1">
           <Recurrence Alignment = {Alignment}/>
           <form onSubmit = {(event) => { 

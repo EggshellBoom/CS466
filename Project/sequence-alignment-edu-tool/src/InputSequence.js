@@ -11,31 +11,31 @@ class InputSequence extends Component {
         sequence1_str : "",
         sequence2_str : "",
         score_matrix: {
-          aa:1,
-          at:-1,
-          ac:-1,
-          ag:-1,
-          ta:-1,
-          tt:1,
-          tc:-1,
-          tg:-1,
-          ca:-1,
-          ct:-1,
-          cc:1,
-          cg:-1,
-          ga:-1,
-          gt:-1,
-          gc:-1,
-          gg:1,
-          gap:-1
+          AA:1,
+          AT:-1,
+          AC:-1,
+          AG:-1,
+          TA:-1,
+          TT:1,
+          TC:-1,
+          TG:-1,
+          CA:-1,
+          CT:-1,
+          CC:1,
+          CG:-1,
+          GA:-1,
+          GT:-1,
+          GC:-1,
+          GG:1,
+          GAP:-1
         }
       };
   }
   
   handlescore = (val,key,key1) =>{
     const{score_matrix} = this.state
-    score_matrix[key] = parseInt(val)
-    score_matrix[key1] = parseInt(val)
+    score_matrix[key.toUpperCase()] = parseInt(val)
+    score_matrix[key1.toUpperCase()] = parseInt(val)
     this.setState({
       score_matrix:score_matrix
     })
@@ -73,8 +73,8 @@ class InputSequence extends Component {
                   value={this.state.sequence1_str} 
                   onChange={(e) => {
                      this.setState({
-                      sequence1_str:e.target.value,
-                      sequence1:["","",e.target.value.split("")].flat()
+                      sequence1_str:e.target.value.toUpperCase(),
+                      sequence1:["","",e.target.value.toUpperCase().split("")].flat()
                      })
                   }} 
                />
@@ -86,8 +86,8 @@ class InputSequence extends Component {
                   value={this.state.sequence2_str} 
                   onChange={(e) => {
                      this.setState({
-                      sequence2_str:e.target.value,
-                      sequence2:["",e.target.value.split("")].flat()
+                      sequence2_str:e.target.value.toUpperCase(),
+                      sequence2:["",e.target.value.toUpperCase().split("")].flat()
                      })
                   }} 
                />
@@ -104,38 +104,38 @@ class InputSequence extends Component {
           </tr>
           <tr>
           <th>A</th>
-          <td><input type="number" value = {this.state.score_matrix.aa}  min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"aa","aa")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.at} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"at","ta")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.ac} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ac","ca")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.ag} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ag","ga")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.AA}  min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"AA","AA")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.AT} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"at","ta")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.AC} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ac","ca")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.AG} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ag","ga")}} /></td>
           </tr>
           <tr>
           <th>T</th>
-          <td><input type="number" value = {this.state.score_matrix.ta} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ta","at")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.tt} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"tt","tt")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.tc} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"tc","ct")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.tg} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"tg","gt")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.TA} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ta","at")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.TT} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"tt","tt")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.TC} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"tc","ct")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.TG} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"tg","gt")}} /></td>
           </tr>
           <tr>
           <th>C</th>
-          <td><input type="number" value = {this.state.score_matrix.ca} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ca","ac")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.ct} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ct","tc")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.cc} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"cc","cc")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.cg} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"cg","gc")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.CA} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ca","ac")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.CT} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ct","tc")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.CC} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"cc","cc")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.CG} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"cg","gc")}} /></td>
           </tr>
           <tr>
           <th>G</th>
-          <td><input type="number" value = {this.state.score_matrix.ga} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ga","ag")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.gt} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"gt","tg")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.gc} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"gc","cg")}} /></td>
-          <td><input type="number" value = {this.state.score_matrix.gg} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"gg","gg")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.GA} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"ga","ag")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.GT} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"gt","tg")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.GC} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"gc","cg")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.GG} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"gg","gg")}} /></td>
           </tr>
           <tr>
-          <th>Gap</th>
+          <th>GAP</th>
           <td></td>
           <td></td>
           <td></td>
-          <td><input type="number" value = {this.state.score_matrix.gap} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"gap")}} /></td>
+          <td><input type="number" value = {this.state.score_matrix.GAP} min="-50" max="50" onChange={(e) => { this.handlescore(e.target.value,"GAP")}} /></td>
           </tr>
          
           </table>
