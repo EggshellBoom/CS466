@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { TimelineMax } from "gsap/all";
+import { TimelineMax } from "gsap";
 import './App.css';
 import Recurrence from './Recurrence.js'
 import BacktraceAnim from "./BacktraceAnim.js"

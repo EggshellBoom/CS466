@@ -1,4 +1,4 @@
-import { TimelineMax } from "gsap/all";
+import { TimelineMax } from "gsap";
 import React, { Component } from 'react';
 import './App.css';
 
